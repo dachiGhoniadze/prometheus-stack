@@ -1,2 +1,6 @@
 ---
 # defaults file for grafana-server
+grafana:
+  username: admin
+  password: admin
+  port: 3000
