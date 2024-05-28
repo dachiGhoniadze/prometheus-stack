@@ -1,0 +1,12 @@
+---
+##### PLAYS FOR ALL HOSTS #####
+- hosts: all
+  pre_tasks:
+  - name: check connection
+    ping:
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
