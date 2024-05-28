@@ -1,0 +1,37 @@
+---
+# tasks file for grafana-server
+- name: Install the prerequisite packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apt-transport-https
+    - software-properties-common
+    - wget
+
+- name: Import grafana GPG key
+  shell: |
+    wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor -o /etc/apt/keyrings/grafana.gpg
+  args:
+    creates: /etc/apt/keyrings/grafana.gpg
+
+- name: Add grafana APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+    state: present
+
+- name: Update cache
+  apt:
+    update_cache: yes
+
+- name: Install Grafana package
+  apt:
+    name: grafana
+    state: present
+    update_cache: yes
+
+- name: restart grafana
+  service: 
+    name: grafana-server
+    state: restarted
+    enabled: yes 
