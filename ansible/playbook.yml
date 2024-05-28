@@ -2,5 +2,6 @@
 - hosts: all
   become: True  
   gather_facts: yes
-  roles:
-    - role: prometheus-alertmanager  
+  roles: 
+    - role: grafana-server
+    - role: prometheus-alertmanager 
