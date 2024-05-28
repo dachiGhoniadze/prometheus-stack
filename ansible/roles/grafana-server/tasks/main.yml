@@ -42,12 +42,6 @@ tasks file for grafana-server
     owner: root
     group: root
 
-- name: add http_addr = 127.0.0.1 
-  lineinfile:
-    path: /etc/grafana/grafana.ini
-    regexp: 'http_addr ='
-    line: "http_addr = 127.0.0.1"
-
 - name: restart grafana
   service: 
     name: grafana-server
@@ -102,4 +96,35 @@ tasks file for grafana-server
   notify:
     - restart_nginx
 
+
+- name: config for grafana.ini
+  template:
+    src: grafana.ini.j2
+    dest: "/etc/grafana/grafana.ini"
+
+- name: restart grafana
+  service:
+    name: grafana-server
+    state: restarted
+
+- name: add grafana dashboard node_exporter
+  community.grafana.grafana_dashboard:
+    grafana_url: "http://127.0.0.1:{{ grafana.port }}"
+    url_username: "{{ grafana.username }}"
+    url_password: "{{ grafana.password }}"
+    dashboard_id: 1860
+    overwrite: true
+
+
+- name: add prometheus dashboard
+  grafana_datasource:
+    name: Prometheus
+    ds_type: prometheus
+    access: proxy
+    ds_url: http://localhost:9090
+    url: "http://127.0.0.1:{{ grafana.port }}"
+    url_username: "{{ grafana.username }}"
+    url_password: "{{ grafana.password }}"
+    state: present
+    
 
