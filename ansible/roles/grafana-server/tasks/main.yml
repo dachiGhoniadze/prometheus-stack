@@ -1,5 +1,5 @@
 ---
-# tasks file for grafana-server
+tasks file for grafana-server
 - name: Install the prerequisite packages
   apt:
     name: "{{ item }}"
@@ -35,6 +35,19 @@
     state: present
     update_cache: yes
 
+- name: Copying the grafana.ini config
+  template:  
+    src: templates/grafana.ini
+    dest: "/etc/grafana"
+    owner: root
+    group: root
+
+- name: add http_addr = 127.0.0.1 
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: 'http_addr ='
+    line: "http_addr = 127.0.0.1"
+
 - name: restart grafana
   service: 
     name: grafana-server
@@ -56,3 +69,37 @@
   apt:
     name: nginx
     state: present
+
+- name: restart nginx
+  service: 
+    name: nginx
+    state: restarted
+    enabled: yes 
+
+- name: Remove default conf
+  ansible.builtin.file:
+    path: "/etc/nginx/conf.d/default.conf"
+    state: absent
+
+- name: config for nginx grafana
+  template:
+    src: grafana.conf.j2
+    dest: "/etc/nginx/conf.d/grafana.conf"
+  notify:
+    - restart_nginx
+
+- name: config for nginx prometheus
+  template:
+    src: prometheus.conf.j2
+    dest: "/etc/nginx/conf.d/prometheus.conf"
+  notify:
+    - restart_nginx
+
+- name: config for nginx alertmanager
+  template:
+    src: alertmanager.conf.j2
+    dest: "/etc/nginx/conf.d/alermanager.conf"
+  notify:
+    - restart_nginx
+
+
