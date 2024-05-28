@@ -1,0 +1,15 @@
+---
+# vars file for prometheus
+prometheus_user: root
+prometheus_dest_dir: /etc/prometheus
+prometheus_data_dir: /var/lib/prometheus
+service_dest_dir: /etc/systemd/system
+prometheus_download_dir: /root/prometheus-2.52.0.linux-386
+prometheus_download_url: https://github.com/prometheus/prometheus/releases/download/v2.52.0/prometheus-2.52.0.linux-386.tar.gz
+# vars file for prometheus
+
+# vars file for node_exporter
+node_exporter_user: root
+node_exporter_download_dir: /root/node_exporter-1.8.1.linux-amd64
+node_exporter_download_url: https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz
+# vars file for node_exporter
